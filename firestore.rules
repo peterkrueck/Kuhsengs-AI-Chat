@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Messages collection rules
+    match /messages/{messageId} {
+      // Allow reading messages if user is authenticated
+      allow read: if request.auth != null;
+      
+      // Allow creating messages if:
+      // 1. User is authenticated
+      // 2. Message data contains required fields
+      // 3. User ID matches the auth ID (except for AI messages)
+      allow create: if request.auth != null
+        && request.resource.data.message is string
+        && request.resource.data.timestamp is timestamp
+        && request.resource.data.username is string
+        && (
+          request.resource.data.uid == request.auth.uid
+          || request.resource.data.uid == 'ai'
+        );
+      
+      // Allow updating/deleting only if:
+      // 1. User is authenticated
+      // 2. User owns the message
+      allow update, delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
