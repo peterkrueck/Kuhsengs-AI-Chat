@@ -31,15 +31,23 @@ A real-time chat application with AI-powered features, built with Svelte and Fir
 
 - **Backend Services**
   - Firebase Authentication
-  - Firebase Firestore
+  - Firebase Cloud Firestore
   - Firebase Cloud Messaging
   - Firebase Hosting
+
+## Database Configuration
+
+The application uses Firebase Cloud Firestore with secure rules:
+- Authentication required for all operations
+- Users can only modify their own messages
+- Protected AI message handling
+- Optimized indexes for efficient queries
 
 ## Setup
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
+git clone https://github.com/peterkrueck/Kuhsengs-AI-Chat.git
 cd kuhsengs-chat
 ```
 
@@ -50,27 +58,37 @@ npm install
 
 3. Set up environment variables:
 Create a `.env` file with your Firebase and OpenAI credentials:
-```
-FIREBASE_API_KEY=your_api_key
-FIREBASE_AUTH_DOMAIN=your_auth_domain
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_storage_bucket
-FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-FIREBASE_APP_ID=your_app_id
-OPENAI_API_KEY=your_openai_api_key
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_OPENAI_API_KEY=your_openai_api_key
 ```
 
-4. Run the development server:
+4. Deploy Firestore Security Rules:
+```bash
+firebase deploy --only firestore:rules
+```
+
+5. Deploy Firestore Indexes:
+```bash
+firebase deploy --only firestore:indexes
+```
+
+6. Run the development server:
 ```bash
 npm run dev
 ```
 
-5. Build for production:
+7. Build for production:
 ```bash
 npm run build
 ```
 
-6. Deploy to Firebase:
+8. Deploy to Firebase:
 ```bash
 firebase deploy
 ```
@@ -95,8 +113,18 @@ kuhsengs-chat/
 ├── static/
 │   ├── firebase-messaging-sw.js
 │   └── notification-icon.svg
-└── package.json
+├── firestore.rules
+├── firestore.indexes.json
+└── firebase.json
 ```
+
+## Security
+
+The application implements several security measures:
+- Firestore security rules to protect data
+- Environment variables for sensitive data
+- Authentication required for all operations
+- Rate limiting for AI interactions
 
 ## Contributing
 
